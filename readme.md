@@ -106,5 +106,78 @@ This project was created to focus on working with the DOM, events, state, local 
         - To do this create another function displayItems() and place it to the top, the reason is that every time the page load this will fetch te data and display to the DOM.
         - const itemsFromStorage = getItemsFromStorage(); // Data from storage is stored in this variable
         - Loop through the itemsFromStorage(item)
-        - 
+        - And for each item call the addItemToDOM function(item)
+        - call the checkUI();
+    - Create an Init function and put all the event listeners inside and call only the Init function
 
+# Remove Items From Local Storage 
+    - removeItem() function renamed to onClickItem() {handler function}
+        - dont delete the removeItem() function
+    - create a new function onClickItem
+        - Create e statement to see what element we are clicking so we can decide what we are deleting
+        - e.target.parentElement.parentElement
+    - On the other side at removeItem(item) function
+        - Lets create a statement that display us to confirm the deletion of the 'item' (actual element that cames from the onClickItem)
+        - call the item.remove() // remove item from DOM
+        - Now lets delete item from storage
+            - call the removeItemFromStorage(item.textContent)
+        - run the checkUI
+    - Lets create the removeItemFromStorage(item)
+        - get the item from storage = getItemsFromStorage()
+        - filter from the storage using filter method()
+            - take one param and check if is not equal to item
+        - re-set to local storage
+        - reload the page to see if the functionality is working
+    - Remove the items from storage using the 'Clear' button
+        - localStorage.removeItem('items')
+
+# Set Item To Edit Mode - Part 1
+    Steps:
+        - Select one of the 'li'
+        - The selected li will be displayed at the 'input' field
+        - The button will change 'text' , 'color' and 'icon'
+    - Initialize a variable to the global state and set it 'false' (let isEditMode = false)
+    - Inside of the onClickItem() after the if statement we are going to add an else and create a new function {
+        setItemToEdit(e.target)
+    } and passing the current click.
+    - Now lets create the function setItemToEdit(item)
+        - isEditMode = true;
+        - make some visual edits to see that we are in edit mode
+        - Select the text make the text a little lighter (item.style.color) or add a class from the css ('edit-mode')
+        - Select form button and change the text color and icon (innerHTML)
+        - Select the input.value = item.textContent
+            - Issue:
+                - if we select all items, all items will be grayed and put to edit Mode, but we want only one to be selected
+                - How do we handle this?
+                - Down below the isEditMode = true
+                    - we select all the 'li' and loop through using forEach(i) and remove the class ('edit-mode');
+
+# Update Item & Reset State - Part 2
+    - Now before we continue with Part 1 lets check if we are in check mode
+    - Go to onAddItemSubmit() function after the validation we are going to run a statement
+    - if (isEditMode)
+    - init a new varibale = itemList.querySelector('.edit-mode')
+    - call the removeItemFromStorage(itemToEdit.textContent)
+    - itemToEdit.remove()
+    - isEditMode = false
+
+    - Now our button Stays with the previous styling,
+        - How to fix it?
+        - Go to checkUI
+            - clear the Input
+            - change the button style like it was at the beginning
+            - isEditMode = false (edit mode will stay always false)
+
+# Prevent Duplicate Items
+    - create a function checkIfItemExists(item)
+    - get item from local storage
+    - check if items exists inside of the localStorage using .includes(item) method
+        - This method return 'true' or 'false'
+    - return itemsFromStorage.includes(item)
+    - Now we have to run this function while we are in editMode
+        - after the else of the check for edit mode
+            - if (checkIfItemExists(newItem))
+                -alert('That item already exists')
+                - return
+
+# The documentation is done - Tomorrow start with implementation
