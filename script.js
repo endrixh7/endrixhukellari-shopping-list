@@ -62,6 +62,26 @@ const removeItem = (e) => {
     
 }
 
+const filterItems = (e) => {
+    // Bring the items and loop through
+    const items = itemList.querySelectorAll('li');
+    // Get the value on filter input and convert to lowercase
+    const text = e.target.value.toLowerCase();
+    items.forEach((item)=>{
+        // Select the text, traversing the element, item -> all word -> single letter
+        const itemName = item.firstChild.textContent.toLowerCase();
+        
+        // Compare the 'text' with the 'itemName'
+        // indexOf() method
+        // This method checks if we have 'the specific letter' on all elements
+        if(itemName.indexOf(text) != -1){
+            item.style.display = 'flex'
+        } else {
+            item.style.display = 'none'
+        }
+    })
+}
+
 const clearItems= ()=> {
     while (itemList.firstChild) {
         itemList.removeChild(itemList.firstChild);
@@ -85,5 +105,7 @@ const checkUI = () => {
 itemForm.addEventListener('submit', addItem);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems)
+itemFilter.addEventListener('input', filterItems)
+
 
 checkUI();
