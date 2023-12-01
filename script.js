@@ -5,7 +5,18 @@ const itemList = document.getElementById('item-list');
 const itemFilter = document.getElementById('filter')
 const clearBtn = document.getElementById('clear');
 
-function addItem (e) {
+// Display items from localStorage after loading the page
+const displayItems = () =>{
+    const itemsFromStorage = getItemsFromStorage();
+
+    // Add to the DOM
+    itemsFromStorage.forEach((item)=>{
+        addItemToDOM(item);
+        checkUI();
+    })
+}
+
+function onAddItemSubmit (e) {
     e.preventDefault();
     // Get the value
     const newItem = itemInput.value;
@@ -14,23 +25,30 @@ function addItem (e) {
         alert('Please add an item');
         return;
     }
-    
-    // Create list item
-    const li = document.createElement('li');
-    li.appendChild(document.createTextNode(newItem));
-    // Create the button
-    const button = createButton('remove-item btn-link text-red');
-    // Append button to li
-    li.appendChild(button);
-    // Append to the DOM
-    itemList.appendChild(li);
-    // Clear the input
-    // itemInput = ''; - This will throw an error 
-
+    // Call addItemToDOM function here
+    addItemToDOM(newItem);
     // Run the CheckUI()
     checkUI();
 
+    // Add item to localStorage
+    addItemToStorage(newItem);
+
     itemInput.value = '';
+}
+
+// Add item to DOM function
+const addItemToDOM = (item) =>{
+        // Create list item
+        const li = document.createElement('li');
+        li.appendChild(document.createTextNode(item));
+        // Create the button
+        const button = createButton('remove-item btn-link text-red');
+        // Append button to li
+        li.appendChild(button);
+        // Append to the DOM
+        itemList.appendChild(li);
+        // Clear the input
+        // itemInput = ''; - This will throw an error 
 }
 
 function createButton(classes) {
@@ -47,6 +65,29 @@ function createIcon(classes) {
     const icon = document.createElement('i');
     icon.className = classes;
     return icon;
+}
+
+// Add item to localStorage function
+const addItemToStorage =(item) =>{
+    // Init an empty variable
+    let itemsFromStorage = getItemsFromStorage()
+
+    // Add new item to array
+    itemsFromStorage.push(item);
+    
+    // Convert to JSON string and set to localStorage
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+}
+
+// Fetch items from Storage and display to HTML
+const getItemsFromStorage = () => {
+    // Check if we have items
+    if(localStorage.getItem('items') === null) {
+        itemsFromStorage = [];
+    } else {
+        itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+    }
+    return itemsFromStorage;
 }
 
 // Remove the entire li, here we have event delegation
@@ -101,11 +142,17 @@ const checkUI = () => {
     }
 }
 
-// Event Listeners
-itemForm.addEventListener('submit', addItem);
+// Init app
+const init = () => {
+    // Event Listeners
+itemForm.addEventListener('submit', onAddItemSubmit);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems)
 itemFilter.addEventListener('input', filterItems)
-
-
+// Run the getItemsFromStorage on document object
+document.addEventListener('DOMContentLoaded', displayItems)
 checkUI();
+}
+
+init();
+
