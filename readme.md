@@ -181,3 +181,5 @@ This project was created to focus on working with the DOM, events, state, local 
                 - return
 
 # The documentation is done - Tomorrow start with implementation
+
+# Checking for Potential Bugs
