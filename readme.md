@@ -183,3 +183,10 @@ This project was created to focus on working with the DOM, events, state, local 
 # The documentation is done - Tomorrow start with implementation
 
 # Checking for Potential Bugs
+    - First Bug
+        - there is a bug in the project. if the list has eggs and bread for example. when I click on eggs and edit it to bread, it adds it to the list even though it's already in the list
+    - Fix it
+
+    - Second Bug
+        - If a user adds "juice" when "Juice" is already in the list, it can still be added
+        - Fix it

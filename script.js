@@ -22,6 +22,8 @@ const displayItems = () =>{
 function onAddItemSubmit (e) {
     e.preventDefault();
     // Get the value
+    // Fix the bug with this line of code
+    const itemToEdit = itemList.querySelector(".edit-mode");
     const newItem = itemInput.value;
     // Validate input
     if (newItem === '') {
@@ -42,16 +44,25 @@ function onAddItemSubmit (e) {
         // remove from DOM
         itemToEdit.remove();
         isEditMode = false;
-
+    } else {
+        // Compare the New Item with the Old Item
+        if (checkIfItemExists(newItem)) {
+            alert('Item already exists');
+            itemToEdit.classList.remove("edit-mode");
+            isEditMode = false;
+            checkUI();
+            return;
+        }
     }
 
     // Call addItemToDOM function here
     addItemToDOM(newItem);
-    // Run the CheckUI()
-    checkUI();
 
     // Add item to localStorage
     addItemToStorage(newItem);
+
+        // Run the CheckUI()
+        checkUI();
 
     itemInput.value = '';
 }
@@ -122,6 +133,21 @@ const onClickItem = (e) => {
         setItemToEdit(e.target);
     }
 }
+
+// Check for duplicate items
+function checkIfItemExists (item) {
+    // Get item from localStorage
+    const itemsFromStorage = getItemsFromStorage();
+
+    // Check if exists or not
+    if(itemsFromStorage.includes(item)){
+        return true;
+    } else {
+        return false;
+    }
+}
+// Use this function to 'isEditMode'
+
 
 function setItemToEdit(item) {
     isEditMode = true;
