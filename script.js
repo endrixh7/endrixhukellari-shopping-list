@@ -138,13 +138,9 @@ const onClickItem = (e) => {
 function checkIfItemExists (item) {
     // Get item from localStorage
     const itemsFromStorage = getItemsFromStorage();
-
-    // Check if exists or not
-    if(itemsFromStorage.includes(item)){
-        return true;
-    } else {
-        return false;
-    }
+    // Make all items to lowercase
+    const itemsLowerCase = itemsFromStorage.map((str) => str.toLowerCase());
+    return itemsLowerCase.includes(item.toLowerCase());
 }
 // Use this function to 'isEditMode'
 

@@ -190,3 +190,9 @@ This project was created to focus on working with the DOM, events, state, local 
     - Second Bug
         - If a user adds "juice" when "Juice" is already in the list, it can still be added
         - Fix it
+            - Done 
+                - function checkIfItemExists(item) {
+                    const itemsFromStorage = getItemsFromStorage();
+                    const itemsLowerCase = itemsFromStorage.map((str) => str.toLowerCase());
+                    return itemsLowerCase.includes(item.toLowerCase());
+                    }
