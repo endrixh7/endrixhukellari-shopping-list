@@ -112,6 +112,9 @@ const getItemsFromStorage = () => {
 
 // onClickItem function, pick where to click on X or 'li'
 const onClickItem = (e) => {
+    if (e.target.id === 'item-list'){
+        return;
+    }
     if(e.target.parentElement.classList.contains('remove-item')){
         // traversing the DOM to get what we want
         removeItem(e.target.parentElement.parentElement)
