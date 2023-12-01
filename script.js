@@ -4,6 +4,9 @@ const itemInput = document.getElementById('item-input')
 const itemList = document.getElementById('item-list');
 const itemFilter = document.getElementById('filter')
 const clearBtn = document.getElementById('clear');
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
+
 
 // Display items from localStorage after loading the page
 const displayItems = () =>{
@@ -25,6 +28,23 @@ function onAddItemSubmit (e) {
         alert('Please add an item');
         return;
     }
+
+    // Check for edit mode
+    if(isEditMode) {
+        // Remove the old 'newItem' and Add the 'new' newItem
+        
+        // Select the item that is in 'edit-mode'
+        const itemToEdit = itemList.querySelector('.edit-mode');
+
+        // Remove item from storage
+        removeItemFromStorage(itemToEdit.textContent);
+        itemToEdit.classList.remove('.edit-mode');
+        // remove from DOM
+        itemToEdit.remove();
+        isEditMode = false;
+
+    }
+
     // Call addItemToDOM function here
     addItemToDOM(newItem);
     // Run the CheckUI()
@@ -90,17 +110,53 @@ const getItemsFromStorage = () => {
     return itemsFromStorage;
 }
 
-// Remove the entire li, here we have event delegation
-const removeItem = (e) => {
+// onClickItem function, pick where to click on X or 'li'
+const onClickItem = (e) => {
     if(e.target.parentElement.classList.contains('remove-item')){
         // traversing the DOM to get what we want
-        if (confirm('Are you sure?')) {
-            e.target.parentElement.parentElement.remove();
-
-            checkUI();
-        }
+        removeItem(e.target.parentElement.parentElement)
+    } else {
+        setItemToEdit(e.target);
     }
-    
+}
+
+function setItemToEdit(item) {
+    isEditMode = true;
+
+    itemList.
+    querySelectorAll('li')
+    .forEach((i)=> i.classList.remove('edit-mode'));
+
+    // Edit the visuall button
+    item.classList.add('edit-mode');
+    formBtn.innerHTML = '<li class="fa-solid fa-pen"></li> Update Item'
+    // Bring the value while editing and change the btn color
+    formBtn.style.backgroundColor = '#228b22';
+    itemInput.value = item.textContent;
+}
+
+// Remove the entire li, here we have event delegation
+const removeItem = (item) => {
+    if(confirm('Are you sure?')) {
+        // remove item from DOM
+        item.remove()
+        // remove item from localStorage
+        removeItemFromStorage(item.textContent);
+        checkUI();
+    }
+}
+
+// remove item from localStorage function
+// Dont forget to call on 'clearItems' btn
+const removeItemFromStorage = (item) => {
+    // Bring items from storage
+    let itemsFromStorage = getItemsFromStorage();
+
+    // Filter item to be removed
+    itemsFromStorage = itemsFromStorage.filter((i)=>i !== item);
+
+    // Re-set to localStorage
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage))
 }
 
 const filterItems = (e) => {
@@ -127,11 +183,17 @@ const clearItems= ()=> {
     while (itemList.firstChild) {
         itemList.removeChild(itemList.firstChild);
     }
+    // Clear from localStorage using 'clearItems' btn
+    localStorage.removeItem('items');
+
     checkUI();
 }
 
 // Hide and Display 'clearBtn' and 'itemFilter'
 const checkUI = () => {
+    // Clear the UI 
+    itemInput.value = '';
+
     const items = itemList.querySelectorAll('li');
     if (items.length === 0) {
         clearBtn.style.display = 'none';
@@ -140,13 +202,19 @@ const checkUI = () => {
         clearBtn.style.display = 'block';
         itemFilter.style.display = 'block'
     }
+    
+    // Reset the button to 'the initial state';
+    formBtn.innerHTML = '<li class="fa-solid fa-plus" ></li> Add Item';
+    formBtn.style.backgroundColor = '#333';
+    isEditMode = false;
+    
 }
 
 // Init app
 const init = () => {
     // Event Listeners
 itemForm.addEventListener('submit', onAddItemSubmit);
-itemList.addEventListener('click', removeItem);
+itemList.addEventListener('click', onClickItem);
 clearBtn.addEventListener('click', clearItems)
 itemFilter.addEventListener('input', filterItems)
 // Run the getItemsFromStorage on document object
